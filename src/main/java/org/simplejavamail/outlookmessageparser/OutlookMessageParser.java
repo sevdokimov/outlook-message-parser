@@ -1,29 +1,14 @@
 package org.simplejavamail.outlookmessageparser;
 
-import org.apache.poi.poifs.filesystem.DirectoryEntry;
-import org.apache.poi.poifs.filesystem.DocumentEntry;
-import org.apache.poi.poifs.filesystem.DocumentInputStream;
-import org.apache.poi.poifs.filesystem.Entry;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.simplejavamail.outlookmessageparser.model.OutlookAttachment;
-import org.simplejavamail.outlookmessageparser.model.OutlookFieldInformation;
-import org.simplejavamail.outlookmessageparser.model.OutlookFileAttachment;
-import org.simplejavamail.outlookmessageparser.model.OutlookMessage;
-import org.simplejavamail.outlookmessageparser.model.OutlookMessageProperty;
-import org.simplejavamail.outlookmessageparser.model.OutlookMsgAttachment;
-import org.simplejavamail.outlookmessageparser.model.OutlookRecipient;
+import org.apache.poi.poifs.filesystem.*;
+import org.simplejavamail.outlookmessageparser.model.*;
 import org.simplejavamail.outlookmessageparser.rtf.RTF2HTMLConverter;
 import org.simplejavamail.outlookmessageparser.rtf.SimpleRTF2HTMLConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -592,7 +577,7 @@ public class OutlookMessageParser {
 			} else {
 				// a directory within the attachment directory entry  means that a .msg file is attached at this point.
 				// we recursively parse this .msg file and add it as a OutlookMsgAttachment object to the current OutlookMessage object.
-				OutlookMessage attachmentMsg = new OutlookMessage();
+				OutlookMessage attachmentMsg = new OutlookMessage(rtf2htmlConverter);
 				OutlookMsgAttachment msgAttachment = new OutlookMsgAttachment(attachmentMsg);
 				msg.addAttachment(msgAttachment);
 				checkDirectoryEntry((DirectoryEntry) entry, attachmentMsg);

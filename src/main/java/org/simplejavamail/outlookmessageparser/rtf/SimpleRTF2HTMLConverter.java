@@ -44,19 +44,32 @@ public class SimpleRTF2HTMLConverter implements RTF2HTMLConverter {
 	 * @return The text with replaced special characters that denote hex codes for strings using Windows CP1252 encoding.
 	 */
 	private String replaceHexSequences(String text) {
+		StringBuilder res = null;
 		Matcher m = compile("\\\\'(..)").matcher(text);
 
+		int lastPosition = 0;
+
 		while (m.find()) {
-			for (int g = 1; g <= m.groupCount(); g++) {
-				String hex = m.group(g);
-				String hexToString = hexToString(hex);
-				if (hexToString != null) {
-					text = text.replaceAll("\\\\'" + hex, hexToString);
-				}
+			if (res == null)
+				res = new StringBuilder();
+
+			res.append(text, lastPosition, m.start());
+
+			String hex = m.group(1);
+			String hexToString = hexToString(hex);
+			if (hexToString != null) {
+				res.append(hexToString);
 			}
+
+			lastPosition = m.end();
 		}
 
-		return text;
+		if (res == null)
+			return text;
+
+		res.append(text, lastPosition, text.length());
+		
+		return res.toString();
 	}
 
 	/**
